@@ -36,7 +36,7 @@ try: from textwrap import wrap
 except: pass
 
 # Use Unicode characters instead of their ascii psuedo-replacements
-UNICODE_SNOB = 0
+UNICODE_SNOB = 1
 
 # Put the links after each paragraph instead of at the end.
 LINKS_EACH_PARAGRAPH = 0
@@ -486,7 +486,7 @@ class _html2text(HTMLParser.HTMLParser):
                 self.p()
 
         if tag in ['em', 'i', 'u']: self.o("_")
-        if tag in ['strong', 'b']: self.o("**")
+        if tag in ['strong', 'b', 'glossterm']: self.o("**")
         if tag in ['del', 'strike']:
             if start:
                 self.o("<"+tag+">")
@@ -516,13 +516,19 @@ class _html2text(HTMLParser.HTMLParser):
                 if has_key(attrs, 'href') and not (SKIP_INTERNAL_LINKS and attrs['href'].startswith('#')):
                     self.astack.append(attrs)
                     self.o("[")
+                elif has_key(attrs, 'class'):
+                    if attrs['class'] == "glossterm":
+                        self.astack.append(attrs)
+                        self.o("**")
                 else:
                     self.astack.append(None)
             else:
                 if self.astack:
                     a = self.astack.pop()
                     if a:
-                        if INLINE_LINKS:
+                        if 'class' in a.keys() and a['class'] == "glossterm":
+                            self.o("**")
+                        elif INLINE_LINKS:
                             self.o("](" + a['href'] + ")")
                         else:
                             i = self.previousIndex(a)
