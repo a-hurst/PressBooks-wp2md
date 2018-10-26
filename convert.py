@@ -272,7 +272,7 @@ def write_markdown(data):
 
         if fn is not None and i['title'] != "Hello world!" and i['body'] != 'None':
             with codecs.open(fn, 'w', encoding='utf-8') as out:
-                out.write('# {0}\n\n'.format(i['title']))
+                out.write(u'# {0}\n\n'.format(i['title']))
                 try:
                     content = html2text_file(i['body'], None)
                     for f in filters:
