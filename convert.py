@@ -107,7 +107,6 @@ def parse_xml(file):
                         img_srcs.append(img['src'])
                 except:
                     print('could not parse html: ' + body)
-            # print(img_srcs)
 
             excerpt = gi('excerpt:encoded', empty=True)
 
